@@ -31,7 +31,6 @@ ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
-# TODO здесь тоже нужно подключить Swagger и corsheaders
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -45,6 +44,7 @@ INSTALLED_APPS = [
     "drf_yasg",
     "djoser",
     "redoc",
+    "rest_framework_simplejwt"
 ]
 
 MIDDLEWARE = [
@@ -80,6 +80,9 @@ WSGI_APPLICATION = "skymarket.wsgi.application"
 
 # TODO здесь мы настраиваем аутентификацию и пагинацию
 REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
 }
 
 DJOSER = {
@@ -140,7 +143,7 @@ MEDIA_URL = "/django_media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "django_media")
 
 CORS_ALLOWED_ORIGINS = [
-    '<http://localhost:8000>',  # Замените на адрес вашего фронтенд-сервера
+    '<http://localhost:8000>',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -163,9 +166,3 @@ EMAIL_HOST = os.environ.get("EMAIL_HOST", "smtp.gmail.com")
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 EMAIL_PORT = os.environ.get("EMAIL_PORT")
-
-REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
-    ),
-}
