@@ -158,6 +158,8 @@ CORS_ALLOW_ALL_ORIGINS = False
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+AUTH_USER_MODEL = 'users.User'
+
 # Include Email Backend
 # TODO эти переменные мы добавили чтобы помочь Вам настроить почтовый ящик на django.
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
