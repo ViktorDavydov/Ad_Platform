@@ -1,17 +1,21 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import pagination, viewsets, generics
 
+from .filters import AdFilter
 from .models import Ad, Comment
 from .serializers import AdSerializer, AdListSerializer, CommentListSerializer, CommentCreateSerializer
 
 
-class Pagination(pagination.PageNumberPagination):
+class AdPagination(pagination.PageNumberPagination):
     page_size = 4
 
 
 class AdViewSet(viewsets.ModelViewSet):
     serializer_class = AdSerializer
     queryset = Ad.objects.all()
-    pagination_class = Pagination
+    pagination_class = AdPagination
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = AdFilter
 
     def get_serializer_class(self, *args, **kwargs):
         if self.action == "retrieve":
@@ -26,7 +30,7 @@ class AdViewSet(viewsets.ModelViewSet):
 class AdMyListAPIView(generics.ListAPIView):
     serializer_class = AdSerializer
     queryset = Ad.objects.all()
-    pagination_class = Pagination
+    pagination_class = AdPagination
 
     def get_queryset(self):
         return Ad.objects.filter(author=self.request.user)
@@ -35,7 +39,6 @@ class AdMyListAPIView(generics.ListAPIView):
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentListSerializer
     queryset = Comment.objects.all()
-    pagination_class = Pagination
 
     def get_serializer_class(self, *args, **kwargs):
         if self.action == "create":
