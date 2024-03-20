@@ -11,14 +11,22 @@ class AdPagination(pagination.PageNumberPagination):
 class AdViewSet(viewsets.ModelViewSet):
     serializer_class = AdSerializer
     queryset = Ad.objects.all()
+    pagination_class = AdPagination
+
+    def get_serializer_class(self, *args, **kwargs):
+        if self.action in ["retrieve", "preform_create", "update"]:
+            return AdListSerializer
+        else:
+            return AdSerializer
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
 
-class AdListAPIView(generics.ListAPIView):
-    serializer_class = AdListSerializer
+class AdMyListAPIView(generics.ListAPIView):
+    serializer_class = AdSerializer
     queryset = Ad.objects.all()
+    pagination_class = AdPagination
 
     def get_queryset(self):
         return Ad.objects.filter(author=self.request.user)
