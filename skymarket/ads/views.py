@@ -1,20 +1,20 @@
 from rest_framework import pagination, viewsets, generics
 
-from .models import Ad
-from .serializers import AdSerializer, AdListSerializer
+from .models import Ad, Comment
+from .serializers import AdSerializer, AdListSerializer, CommentListSerializer, CommentCreateSerializer
 
 
-class AdPagination(pagination.PageNumberPagination):
+class Pagination(pagination.PageNumberPagination):
     page_size = 4
 
 
 class AdViewSet(viewsets.ModelViewSet):
     serializer_class = AdSerializer
     queryset = Ad.objects.all()
-    pagination_class = AdPagination
+    pagination_class = Pagination
 
     def get_serializer_class(self, *args, **kwargs):
-        if self.action in ["retrieve", "preform_create", "update"]:
+        if self.action == "retrieve":
             return AdListSerializer
         else:
             return AdSerializer
@@ -26,11 +26,24 @@ class AdViewSet(viewsets.ModelViewSet):
 class AdMyListAPIView(generics.ListAPIView):
     serializer_class = AdSerializer
     queryset = Ad.objects.all()
-    pagination_class = AdPagination
+    pagination_class = Pagination
 
     def get_queryset(self):
         return Ad.objects.filter(author=self.request.user)
 
 
 class CommentViewSet(viewsets.ModelViewSet):
-    pass
+    serializer_class = CommentListSerializer
+    queryset = Comment.objects.all()
+    pagination_class = Pagination
+
+    def get_serializer_class(self, *args, **kwargs):
+        if self.action == "create":
+            return CommentCreateSerializer
+        return CommentListSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user, ad_id=self.kwargs['ad_pk'])
+
+    def get_queryset(self):
+        return Comment.objects.filter(ad_id=self.kwargs['ad_pk'])
