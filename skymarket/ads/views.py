@@ -64,3 +64,10 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Comment.objects.filter(ad_id=self.kwargs['ad_pk'])
+
+    def get_permissions(self):
+        if self.action in ['list', 'create', 'retrieve']:
+            self.permission_classes = [IsAuthenticated]
+        elif self.action in ['update', 'partial_update', 'destroy']:
+            self.permission_classes = [IsAuthenticated, IsOwnerOrAdmin]
+        return super().get_permissions()
