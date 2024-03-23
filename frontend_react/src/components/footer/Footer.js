@@ -11,7 +11,7 @@ function Footer() {
         ""
       ) : (
         <p className="footer__copyright">
-          &#169; Skypro 2022. All rights reserved.
+          &#169; Ad Platform 2024. All rights reserved.
         </p>
       )}
     </footer>
